@@ -44,11 +44,6 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>cn.itlym.shoulder</groupId>
-            <artifactId>lombok</artifactId>
-            <version>0.1</version>
-        </dependency>
     </dependencies>
 
     <build>
