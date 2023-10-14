@@ -1,5 +1,6 @@
 package com.example.bookstore.repository.impl;
 
+import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.BookRepository;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -30,7 +31,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't insert a book: " + book, e);
+            throw new EntityNotFoundException("Can't insert a book: " + book, e);
         } finally {
             if (session != null) {
                 session.close();
