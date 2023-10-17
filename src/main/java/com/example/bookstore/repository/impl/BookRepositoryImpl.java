@@ -1,9 +1,11 @@
 package com.example.bookstore.repository.impl;
 
+import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.BookRepository;
 import jakarta.persistence.criteria.CriteriaQuery;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -46,6 +48,15 @@ public class BookRepositoryImpl implements BookRepository {
             return session.createQuery(criteriaQuery).getResultList();
         } catch (Exception e) {
             throw new RuntimeException("Can't get all books", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        try {
+            return Optional.ofNullable(sessionFactory.fromSession(s -> s.find(Book.class, id)));
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Can't get book by id: " + id, e);
         }
     }
 }
