@@ -11,13 +11,12 @@ import com.example.bookstore.repository.book.BookSpecificationBuilder;
 import com.example.bookstore.service.BookService;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
@@ -25,7 +24,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto save(CreateBookRequestDto bookRequestDto) {
-        Book bookFromDB = bookRepository.save(bookMapper.toModel(bookRequestDto));
+        Book bookFromDB = bookRepository.save(bookMapper.toBook(bookRequestDto));
         return bookMapper.toDto(bookFromDB);
     }
 
@@ -46,11 +45,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(Long id) {
-        Optional<Book> bookFromDB = bookRepository.findById(id);
-        if (bookFromDB.isPresent()) {
-            return bookMapper.toDto(bookFromDB.get());
-        }
-        throw new EntityNotFoundException("Can't find book by id: " + id);
+        return bookRepository.findById(id)
+                .map(bookMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find book by id: " + id));
     }
 
     @Override
