@@ -31,7 +31,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new EntityNotFoundException("Can't insert a book: " + book, e);
+            throw new RuntimeException("Can't insert a book: " + book, e);
         } finally {
             if (session != null) {
                 session.close();
@@ -53,11 +53,10 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Optional<Book> findById(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("from Book b where b.id = :id", Book.class)
-                    .setParameter("id", id).stream().findFirst();
+        try {
+            return Optional.ofNullable(sessionFactory.fromSession(s -> s.find(Book.class, id)));
         } catch (Exception e) {
-            throw new RuntimeException("Can't get book by id: " + id, e);
+            throw new EntityNotFoundException("Can't get book by id: " + id, e);
         }
     }
 }
