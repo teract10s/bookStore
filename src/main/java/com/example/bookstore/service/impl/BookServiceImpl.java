@@ -6,8 +6,8 @@ import com.example.bookstore.dto.CreateBookRequestDto;
 import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.mapper.BookMapper;
 import com.example.bookstore.model.Book;
-import com.example.bookstore.repository.book.BookRepository;
-import com.example.bookstore.repository.book.BookSpecificationBuilder;
+import com.example.bookstore.repository.BookRepository;
+import com.example.bookstore.repository.BookSpecificationBuilder;
 import com.example.bookstore.service.BookService;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -39,7 +39,7 @@ public class BookServiceImpl implements BookService {
     public BookDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
         Book bookFromDb = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Can't find book by id: " + id));
-        bookFromDb = updateField(bookFromDb, bookRequestDto);
+        bookMapper.upgradeBookByDto(bookRequestDto, bookFromDb);
         return bookMapper.toDto(bookRepository.save(bookFromDb));
     }
 
@@ -57,31 +57,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> search(BookSearchParameters searchParameters) {
-        Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
+        Specification<Book> bookSpecification = bookSpecificationBuilder
+                .buildFrom(searchParameters);
         return bookRepository.findAll(bookSpecification).stream()
                 .map(bookMapper::toDto)
                 .toList();
-    }
-
-    private Book updateField(Book bookFromDb, CreateBookRequestDto bookRequestDto) {
-        if (bookRequestDto.title() != null) {
-            bookFromDb.setTitle(bookRequestDto.title());
-        }
-        if (bookRequestDto.author() != null) {
-            bookFromDb.setAuthor(bookRequestDto.author());
-        }
-        if (bookRequestDto.isbn() != null) {
-            bookFromDb.setIsbn(bookRequestDto.isbn());
-        }
-        if (bookRequestDto.price() != null) {
-            bookFromDb.setPrice(bookRequestDto.price());
-        }
-        if (bookRequestDto.description() != null) {
-            bookFromDb.setDescription(bookRequestDto.description());
-        }
-        if (bookRequestDto.coverImage() != null) {
-            bookFromDb.setCoverImage(bookRequestDto.coverImage());
-        }
-        return bookFromDb;
     }
 }
