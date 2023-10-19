@@ -21,12 +21,12 @@ public class BookSpecificationBuilder {
         return spec;
     }
 
-    private static Specification<Book> getTitleSpecification(String[] titles) {
+    private Specification<Book> getTitleSpecification(String[] titles) {
         return (root, query, criteriaBuilder) -> root.get("title")
                 .in(Arrays.stream(titles).toArray());
     }
 
-    private static Specification<Book> getAuthorSpecification(String[] authors) {
+    private Specification<Book> getAuthorSpecification(String[] authors) {
         return (root, query, criteriaBuilder) -> root.get("author")
                 .in(Arrays.stream(authors).toArray());
     }

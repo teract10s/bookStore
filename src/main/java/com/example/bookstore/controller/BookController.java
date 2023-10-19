@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,18 +37,21 @@ public class BookController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one book by id", description = "Get a bookDto by id")
+    @ResponseStatus(HttpStatus.OK)
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
     @PostMapping("/")
     @Operation(summary = "Create a new book", description = "Create a new book")
+    @ResponseStatus(HttpStatus.CREATED)
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update book", description = "Update book by id")
+    @ResponseStatus(HttpStatus.OK)
     public BookDto updateBook(@PathVariable Long id,
                               @RequestBody CreateBookRequestDto createBookRequestDto) {
         return bookService.updateById(createBookRequestDto, id);
@@ -55,14 +59,16 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete book", description = "Delete book by id")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
+    @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
         return bookService.search(searchParameters, pageable);
     }

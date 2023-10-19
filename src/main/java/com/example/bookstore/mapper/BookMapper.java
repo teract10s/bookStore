@@ -13,13 +13,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
-        implementationPackage = "<PACKAGE_NAME>.impl"
-)
+        implementationPackage = "<PACKAGE_NAME>.impl")
 public interface BookMapper {
     BookDto toDto(Book book);
 
     Book toBook(CreateBookRequestDto requestDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void upgradeBookByDto(CreateBookRequestDto requestDto, @MappingTarget Book book);
+    void upgradeBook(CreateBookRequestDto requestDto, @MappingTarget Book book);
 }
