@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
     public BookDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
         Book bookFromDb = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Can't find book by id: " + id));
-        bookMapper.upgradeBook(bookRequestDto, bookFromDb);
+        bookMapper.updateBook(bookRequestDto, bookFromDb);
         return bookMapper.toDto(bookRepository.save(bookFromDb));
     }
 

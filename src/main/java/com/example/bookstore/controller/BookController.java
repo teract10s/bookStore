@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ public class BookController {
 
     @GetMapping("/")
     @Operation(summary = "Get all books", description = "Get a list of all available books")
-    public List<BookDto> getAll(Pageable pageable) {
+    public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
@@ -69,7 +70,8 @@ public class BookController {
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
+    public List<BookDto> search(BookSearchParameters searchParameters,
+                                @PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
         return bookService.search(searchParameters, pageable);
     }
 }
