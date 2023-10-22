@@ -32,7 +32,8 @@ public class BookController {
 
     @GetMapping("/")
     @Operation(summary = "Get all books", description = "Get a list of all available books")
-    public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
+    public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
+                                    Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
@@ -71,7 +72,8 @@ public class BookController {
             description = "Get list of all available books by parameters")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(BookSearchParameters searchParameters,
-                                @PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
+                                @PageableDefault(page = 0, size = 10, sort = "title")
+                                Pageable pageable) {
         return bookService.search(searchParameters, pageable);
     }
 }
