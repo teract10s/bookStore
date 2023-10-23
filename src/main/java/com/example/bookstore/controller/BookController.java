@@ -1,8 +1,8 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.dto.BookDto;
-import com.example.bookstore.dto.BookSearchParameters;
-import com.example.bookstore.dto.CreateBookRequestDto;
+import com.example.bookstore.dto.book.BookDto;
+import com.example.bookstore.dto.book.BookSearchParameters;
+import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +33,7 @@ public class BookController {
     @GetMapping("/")
     @Operation(summary = "Get all books", description = "Get a list of all available books")
     public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
-                                    Pageable pageable) {
+                                Pageable pageable) {
         return bookService.findAll(pageable);
     }
 

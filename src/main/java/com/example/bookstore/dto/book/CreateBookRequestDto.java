@@ -1,4 +1,4 @@
-package com.example.bookstore.dto;
+package com.example.bookstore.dto.book;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,4 +12,5 @@ public record CreateBookRequestDto(
         @NotNull @PositiveOrZero BigDecimal price,
         String description,
         String coverImage
-) {}
+) {
+}

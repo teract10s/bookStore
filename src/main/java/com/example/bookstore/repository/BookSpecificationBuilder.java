@@ -1,6 +1,6 @@
 package com.example.bookstore.repository;
 
-import com.example.bookstore.dto.BookSearchParameters;
+import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.model.Book;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
