@@ -12,6 +12,7 @@ import com.example.bookstore.service.BookService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAll() {
-        return bookRepository.findAll().stream()
+    public List<BookDto> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
@@ -39,7 +40,7 @@ public class BookServiceImpl implements BookService {
     public BookDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
         Book bookFromDb = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Can't find book by id: " + id));
-        bookMapper.upgradeBook(bookRequestDto, bookFromDb);
+        bookMapper.updateBook(bookRequestDto, bookFromDb);
         return bookMapper.toDto(bookRepository.save(bookFromDb));
     }
 
@@ -56,10 +57,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> search(BookSearchParameters searchParameters) {
+    public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
         Specification<Book> bookSpecification = bookSpecificationBuilder
                 .buildFrom(searchParameters);
-        return bookRepository.findAll(bookSpecification).stream()
+        return bookRepository.findAll(bookSpecification, pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
