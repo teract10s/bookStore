@@ -13,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/")
+    @GetMapping("")
     @Operation(summary = "Get all books", description = "Get a list of all available books")
     public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
                                 Pageable pageable) {
@@ -44,9 +47,10 @@ public class BookController {
         return bookService.findById(id);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @Operation(summary = "Create a new book", description = "Create a new book")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
@@ -54,7 +58,8 @@ public class BookController {
     @PutMapping("/{id}")
     @Operation(summary = "Update book", description = "Update book by id")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto updateBook(@PathVariable Long id,
+    @PreAuthorize("hasRole('ADMIN')")
+    public BookDto updateBook(Authentication authentication, @PathVariable Long id,
                               @RequestBody CreateBookRequestDto createBookRequestDto) {
         return bookService.updateById(createBookRequestDto, id);
     }
@@ -62,6 +67,7 @@ public class BookController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete book", description = "Delete book by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
         return ResponseEntity.noContent().build();

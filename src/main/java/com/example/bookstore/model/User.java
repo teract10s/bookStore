@@ -11,10 +11,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
-import lombok.Data;
 import lombok.Getter;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.HashCodeExclude;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,31 +20,35 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-@Data
+@Setter
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted=false")
 public class User implements UserDetails {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Getter
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Getter
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Getter
     @Column(name = "shopping_address")
     private String shoppingAddress;
 
-    @ToString.Exclude
-    @HashCodeExclude
+    @Getter
     @ManyToMany()
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
