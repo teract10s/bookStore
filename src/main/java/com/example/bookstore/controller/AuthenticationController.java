@@ -10,6 +10,7 @@ import com.example.bookstore.model.User;
 import com.example.bookstore.security.AuthenticationService;
 import com.example.bookstore.security.CustomUserDetailsService;
 import com.example.bookstore.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,12 +29,17 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "Login by email and password",
+            description = "login")
     @PostMapping("/login")
+    @ResponseStatus(code = HttpStatus.OK)
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authenticationService.authenticate(request);
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register",
+            description = "Register new user")
     @ResponseStatus(code = HttpStatus.CREATED)
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
             throws RegistrationException {
