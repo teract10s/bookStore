@@ -1,8 +1,8 @@
 package com.example.bookstore.mapper;
 
-import com.example.bookstore.dto.book.BookResponseDto;
-import com.example.bookstore.dto.book.CreateBookRequestDto;
-import com.example.bookstore.model.Book;
+import com.example.bookstore.dto.category.CategoryResponseDto;
+import com.example.bookstore.dto.category.CreateCategoryRequestDto;
+import com.example.bookstore.model.Category;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -14,11 +14,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
-public interface BookMapper {
-    BookResponseDto toDto(Book book);
+public interface CategoryMapper {
+    CategoryResponseDto toDto(Category category);
 
-    Book toBook(CreateBookRequestDto requestDto);
+    Category toCategory(CreateCategoryRequestDto categoryDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateBook(CreateBookRequestDto requestDto, @MappingTarget Book book);
+    void updateCategory(CreateCategoryRequestDto requestDto, @MappingTarget Category category);
 }

@@ -1,6 +1,6 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.dto.book.BookDto;
+import com.example.bookstore.dto.book.BookResponseDto;
 import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.service.BookService;
@@ -14,7 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,16 +32,17 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all books", description = "Get a list of all available books")
-    public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
-                                Pageable pageable) {
+    public List<BookResponseDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
+                                        Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one book by id", description = "Get a bookDto by id")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto getBookById(@PathVariable Long id) {
+    public BookResponseDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
@@ -50,7 +50,7 @@ public class BookController {
     @Operation(summary = "Create a new book", description = "Create a new book")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
+    public BookResponseDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
@@ -58,8 +58,8 @@ public class BookController {
     @Operation(summary = "Update book", description = "Update book by id")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public BookDto updateBook(Authentication authentication, @PathVariable Long id,
-                              @RequestBody CreateBookRequestDto createBookRequestDto) {
+    public BookResponseDto updateBook(@PathVariable Long id,
+                                      @RequestBody CreateBookRequestDto createBookRequestDto) {
         return bookService.updateById(createBookRequestDto, id);
     }
 
@@ -76,9 +76,9 @@ public class BookController {
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> search(BookSearchParameters searchParameters,
-                                @PageableDefault(page = 0, size = 10, sort = "title")
-                                Pageable pageable) {
+    public List<BookResponseDto> search(BookSearchParameters searchParameters,
+                                        @PageableDefault(page = 0, size = 10, sort = "title")
+                                        Pageable pageable) {
         return bookService.search(searchParameters, pageable);
     }
 }

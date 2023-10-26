@@ -1,6 +1,6 @@
 package com.example.bookstore.service.impl;
 
-import com.example.bookstore.dto.book.BookDto;
+import com.example.bookstore.dto.book.BookResponseDto;
 import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.exception.EntityNotFoundException;
@@ -24,20 +24,20 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
-    public BookDto save(CreateBookRequestDto bookRequestDto) {
+    public BookResponseDto save(CreateBookRequestDto bookRequestDto) {
         Book bookFromDB = bookRepository.save(bookMapper.toBook(bookRequestDto));
         return bookMapper.toDto(bookFromDB);
     }
 
     @Override
-    public List<BookDto> findAll(Pageable pageable) {
+    public List<BookResponseDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
 
     @Override
-    public BookDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
+    public BookResponseDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
         Book bookFromDb = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Can't find book by id: " + id));
         bookMapper.updateBook(bookRequestDto, bookFromDb);
@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto findById(Long id) {
+    public BookResponseDto findById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find book by id: " + id));
@@ -57,7 +57,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
+    public List<BookResponseDto> getBookByCategoryId(Long id) {
+        return bookRepository.getBooksByCategoryId(id)
+                .stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<BookResponseDto> search(BookSearchParameters searchParameters, Pageable pageable) {
         Specification<Book> bookSpecification = bookSpecificationBuilder
                 .buildFrom(searchParameters);
         return bookRepository.findAll(bookSpecification, pageable).stream()
