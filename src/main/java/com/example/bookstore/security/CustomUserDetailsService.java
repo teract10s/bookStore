@@ -1,6 +1,5 @@
 package com.example.bookstore.security;
 
-import com.example.bookstore.exception.LoginException;
 import com.example.bookstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +15,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                .orElseThrow(() -> new LoginException("Can't find user by email"));
+                .orElseThrow(() -> new UsernameNotFoundException("Can't find user by email"));
     }
 }
