@@ -54,16 +54,21 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartItemDto updateQuantityOfCartItem(Long cartItemId, int quantity) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+    public CartItemDto updateQuantityOfCartItem(User user, Long cartItemId, int quantity) {
+        CartItem cartItem = cartItemRepository.findByIdAndUserId(cartItemId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cart item by id: " + cartItemId));
+                        "Can't find cart item by id: " + cartItemId
+                                + " and user_id: " + user.getId()));
         cartItem.setQuantity(quantity);
         return cartItemMapper.toDto(cartItemRepository.save(cartItem));
     }
 
     @Override
-    public void deleteCartItem(Long cartItemId) {
+    public void deleteCartItem(User user, Long cartItemId) {
+        cartItemRepository.findByIdAndUserId(cartItemId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find cart item by id: " + cartItemId
+                                + " and user_id: " + user.getId()));
         cartItemRepository.deleteById(cartItemId);
     }
 }

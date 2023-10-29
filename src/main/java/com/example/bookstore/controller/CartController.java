@@ -55,16 +55,24 @@ public class CartController {
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
     @ResponseStatus(code = HttpStatus.OK)
-    public CartItemDto updateCartQuantity(@PathVariable Long cartItemId,
-                                          @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto) {
-        return shoppingCartService.updateQuantityOfCartItem(cartItemId, cartItemUpdateRequestDto.quantity());
+    public CartItemDto updateCartQuantity(
+            Authentication authentication,
+            @PathVariable Long cartItemId,
+            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
+    ) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        return shoppingCartService
+                .updateQuantityOfCartItem(user, cartItemId, cartItemUpdateRequestDto.quantity());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete cart item")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteCartItem(@PathVariable Long cartItemId) {
-        shoppingCartService.deleteCartItem(cartItemId);
+    public ResponseEntity<Void> deleteCartItem(
+            Authentication authentication, @PathVariable Long cartItemId
+    ) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        shoppingCartService.deleteCartItem(user, cartItemId);
         return ResponseEntity.noContent().build();
     }
 }
