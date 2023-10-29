@@ -56,7 +56,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public CartItemDto updateQuantityOfCartItem(User user, Long cartItemId, int quantity) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCart(cartItemId, shoppingCart)
+        CartItem cartItem = cartItemRepository
+                .findCartItemByIdAndShoppingCart(cartItemId, shoppingCart)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item by id: " + cartItemId
                                 + " and user_id: " + user.getId()));
