@@ -51,7 +51,6 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
-
     }
 
     @Bean

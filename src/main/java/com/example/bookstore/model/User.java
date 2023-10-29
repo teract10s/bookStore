@@ -21,34 +21,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "users")
 @Setter
+@Getter
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted=false")
 public class User implements UserDetails {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Getter
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Getter
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Getter
     @Column(name = "shopping_address")
     private String shoppingAddress;
 
-    @Getter
     @ManyToMany()
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -61,11 +56,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override
