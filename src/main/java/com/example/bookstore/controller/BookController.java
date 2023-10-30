@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Get all books", description = "Get a list of all available books")
     public List<BookDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
                                 Pageable pageable) {
@@ -46,7 +46,7 @@ public class BookController {
         return bookService.findById(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "Create a new book", description = "Create a new book")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
