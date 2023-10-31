@@ -8,6 +8,7 @@ import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.security.AuthenticationService;
 import com.example.bookstore.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
+@Tag(name = "Authentication controller",
+        description = "Here we have endpoints for login and register")
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
