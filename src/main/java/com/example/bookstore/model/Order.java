@@ -48,14 +48,13 @@ public class Order {
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
 
-    @Column(nullable = false)
     @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    private enum Status {
+    public enum Status {
         COMPLETED,
         IN_PROGRESS
     }
