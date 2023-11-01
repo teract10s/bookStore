@@ -1,6 +1,6 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.dto.book.BookResponseDto;
+import com.example.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.example.bookstore.dto.category.CategoryResponseDto;
 import com.example.bookstore.dto.category.CreateCategoryRequestDto;
 import com.example.bookstore.service.BookService;
@@ -33,12 +33,11 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Get all categories")
     @ResponseStatus(HttpStatus.OK)
-    public List<CategoryResponseDto> getAll(
-            @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable
-    ) {
+    @PreAuthorize("hasAuthority('USER')")
+    public List<CategoryResponseDto> getAll(@PageableDefault(sort = "name") Pageable pageable) {
         return categoryService.getAll(pageable);
     }
 
@@ -46,26 +45,25 @@ public class CategoryController {
     @Operation(summary = "Get books by category",
             description = "Getting books by receiving categoryId in path")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookResponseDto> getBooksByCategory(
-            @PathVariable Long categoryId
-    ) {
+    @PreAuthorize("hasAuthority('USER')")
+    public List<BookDtoWithoutCategoryIds> getBooksByCategory(@PathVariable Long categoryId) {
         return bookService.getBookByCategoryId(categoryId);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get category by id")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER')")
     public CategoryResponseDto getCategory(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "Create new category")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
     public CategoryResponseDto createCategory(
-            @RequestBody @Valid CreateCategoryRequestDto categoryDto
-    ) {
+            @RequestBody @Valid CreateCategoryRequestDto categoryDto) {
         return categoryService.save(categoryDto);
     }
 
@@ -73,8 +71,7 @@ public class CategoryController {
     @Operation(summary = "Update category")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CategoryResponseDto updateCategory(
-            @PathVariable Long id,
+    public CategoryResponseDto updateCategory(@PathVariable Long id,
             @RequestBody @Valid CreateCategoryRequestDto categoryDto
     ) {
         return categoryService.updateById(id, categoryDto);

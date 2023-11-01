@@ -45,7 +45,7 @@ public class Book {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "books_categories",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))

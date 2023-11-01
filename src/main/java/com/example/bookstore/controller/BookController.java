@@ -1,6 +1,7 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.dto.book.BookResponseDto;
+import com.example.bookstore.dto.book.BookDto;
+import com.example.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.service.BookService;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -35,41 +35,41 @@ public class BookController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all books", description = "Get a list of all available books")
-    @PreAuthorize("hasRole('USER')")
-    public List<BookResponseDto> getAll(@PageableDefault(page = 0, size = 10, sort = "title")
-                                        Pageable pageable) {
-        return bookService.findAll(pageable);
+    @PreAuthorize("hasAuthority('USER')")
+    public List<BookDto> getAll(
+            @PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
+        return bookService.findAllWithCategories(pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one book by id", description = "Get a bookDto by id")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('USER')")
-    public BookResponseDto getBookById(@PathVariable Long id) {
+    @PreAuthorize("hasAuthority('USER')")
+    public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
     @PostMapping
     @Operation(summary = "Create a new book", description = "Create a new book")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
-    public BookResponseDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public BookDtoWithoutCategoryIds createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update book", description = "Update book by id")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
-    public BookResponseDto updateBook(Authentication authentication, @PathVariable Long id,
-                                      @RequestBody CreateBookRequestDto createBookRequestDto) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public BookDto updateBook(
+            @PathVariable Long id, @RequestBody CreateBookRequestDto createBookRequestDto) {
         return bookService.updateById(createBookRequestDto, id);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete book", description = "Delete book by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -79,8 +79,8 @@ public class BookController {
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('USER')")
-    public List<BookResponseDto> search(BookSearchParameters searchParameters,
+    @PreAuthorize("hasAuthority('USER')")
+    public List<BookDtoWithoutCategoryIds> search(BookSearchParameters searchParameters,
                                 @PageableDefault(page = 0, size = 10, sort = "title")
                                 Pageable pageable) {
         return bookService.search(searchParameters, pageable);
