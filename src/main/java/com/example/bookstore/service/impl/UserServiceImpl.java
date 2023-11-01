@@ -5,9 +5,11 @@ import com.example.bookstore.dto.user.UserResponseDto;
 import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.mapper.UserMapper;
 import com.example.bookstore.model.Role;
+import com.example.bookstore.model.ShoppingCart;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.RoleRepository;
 import com.example.bookstore.repository.UserRepository;
+import com.example.bookstore.service.ShoppingCartService;
 import com.example.bookstore.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request) {
@@ -31,6 +34,13 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(request);
         user.setRoles(Set.of(defaultRole));
         user.setPassword(encoder.encode(request.password()));
-        return userMapper.toDto(userRepository.save(user));
+        createShoppingCart(userRepository.save(user));
+        return userMapper.toDto(user);
+    }
+
+    private void createShoppingCart(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartService.save(shoppingCart);
     }
 }

@@ -27,8 +27,8 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Login by email and password",
-            description = "login")
+    @Operation(summary = "Login",
+            description = "login by email and password")
     @PostMapping("/login")
     @ResponseStatus(code = HttpStatus.OK)
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {

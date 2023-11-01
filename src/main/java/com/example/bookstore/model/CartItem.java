@@ -18,8 +18,6 @@ import org.hibernate.annotations.Where;
 @Table(name = "cart_items")
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE cart_items SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted=false")
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +33,4 @@ public class CartItem {
 
     @Column(nullable = false)
     private int quantity;
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
 }

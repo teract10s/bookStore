@@ -14,5 +14,4 @@ import org.mapstruct.NullValueCheckStrategy;
 public interface ShoppingCartMapper {
     @Mapping(source = "user.id", target = "userId")
     ShoppingCartDto toDto(ShoppingCart shoppingCart);
-
 }

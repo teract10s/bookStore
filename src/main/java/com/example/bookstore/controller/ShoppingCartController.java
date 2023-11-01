@@ -28,51 +28,41 @@ import org.springframework.web.bind.annotation.RestController;
         description = "Endpoints for managing user's shopping cart")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cart")
-public class CartController {
+@RequestMapping("/cart")
+public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
-    private final CustomUserDetailsService userDetailsService;
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Get user's shopping cart")
     @ResponseStatus(code = HttpStatus.OK)
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
-        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
-        return shoppingCartService.getShoppingCartByUserId(user.getId());
+        return shoppingCartService.getShoppingCartByUserId(authentication);
     }
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "Add cart item to user's shopping cart")
     @ResponseStatus(code = HttpStatus.CREATED)
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
             @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto
     ) {
-        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
-        return shoppingCartService.addCartItemToShoppingCart(cartItemRequestDto, user);
+        return shoppingCartService.addCartItemToShoppingCart(cartItemRequestDto, authentication);
     }
 
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
     @ResponseStatus(code = HttpStatus.OK)
-    public CartItemDto updateCartQuantity(
-            Authentication authentication,
-            @PathVariable Long cartItemId,
+    public CartItemDto updateCartQuantity(@PathVariable Long cartItemId,
             @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
     ) {
-        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         return shoppingCartService
-                .updateQuantityOfCartItem(user, cartItemId, cartItemUpdateRequestDto.quantity());
+                .updateQuantityOfCartItem(cartItemId, cartItemUpdateRequestDto.quantity());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete cart item")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteCartItem(
-            Authentication authentication, @PathVariable Long cartItemId
-    ) {
-        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
-        shoppingCartService.deleteCartItem(user, cartItemId);
-        return ResponseEntity.noContent().build();
+    public void deleteCartItem(@PathVariable Long cartItemId) {
+        shoppingCartService.deleteCartItem(cartItemId);
     }
 }
