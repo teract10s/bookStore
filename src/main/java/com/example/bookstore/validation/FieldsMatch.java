@@ -11,9 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldsMatch {
-    String field();
-
-    String fieldMatch();
+    String[] fields();
 
     Class<?>[] groups() default {};
 

@@ -1,6 +1,7 @@
 package com.example.bookstore.service.impl;
 
-import com.example.bookstore.dto.book.BookResponseDto;
+import com.example.bookstore.dto.book.BookDto;
+import com.example.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.exception.EntityNotFoundException;
@@ -24,28 +25,30 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
-    public BookResponseDto save(CreateBookRequestDto bookRequestDto) {
+    public BookDtoWithoutCategoryIds save(CreateBookRequestDto bookRequestDto) {
         Book bookFromDB = bookRepository.save(bookMapper.toBook(bookRequestDto));
-        return bookMapper.toDto(bookFromDB);
+        return bookMapper.toDtoWithoutCategories(bookFromDB);
     }
 
     @Override
-    public List<BookResponseDto> findAll(Pageable pageable) {
-        return bookRepository.findAll(pageable).stream()
+    public List<BookDto> findAllWithCategories(Pageable pageable) {
+        return bookRepository.findAllWithCategories(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
 
     @Override
-    public BookResponseDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
+    public BookDto updateById(CreateBookRequestDto bookRequestDto, Long id) {
         Book bookFromDb = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Can't find book by id: " + id));
         bookMapper.updateBook(bookRequestDto, bookFromDb);
-        return bookMapper.toDto(bookRepository.save(bookFromDb));
+        BookDto dto = bookMapper.toDto(bookRepository.save(bookFromDb));
+        bookMapper.setCategoryIds(dto, bookFromDb);
+        return dto;
     }
 
     @Override
-    public BookResponseDto findById(Long id) {
+    public BookDto findById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find book by id: " + id));
@@ -57,19 +60,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDto> getBookByCategoryId(Long id) {
+    public List<BookDtoWithoutCategoryIds> getBookByCategoryId(Long id) {
         return bookRepository.getBooksByCategoryId(id)
                 .stream()
-                .map(bookMapper::toDto)
+                .map(bookMapper::toDtoWithoutCategories)
                 .toList();
     }
 
     @Override
-    public List<BookResponseDto> search(BookSearchParameters searchParameters, Pageable pageable) {
+    public List<BookDtoWithoutCategoryIds> search(BookSearchParameters searchParameters,
+                                                  Pageable pageable) {
         Specification<Book> bookSpecification = bookSpecificationBuilder
                 .buildFrom(searchParameters);
         return bookRepository.findAll(bookSpecification, pageable).stream()
-                .map(bookMapper::toDto)
+                .map(bookMapper::toDtoWithoutCategories)
                 .toList();
     }
 }

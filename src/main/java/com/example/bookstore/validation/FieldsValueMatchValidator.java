@@ -8,9 +8,10 @@ public class FieldsValueMatchValidator implements ConstraintValidator<FieldsMatc
     private String field;
     private String fieldMatch;
 
+    @Override
     public void initialize(FieldsMatch constraintAnnotation) {
-        this.field = constraintAnnotation.field();
-        this.fieldMatch = constraintAnnotation.fieldMatch();
+        this.field = constraintAnnotation.fields()[0];
+        this.fieldMatch = constraintAnnotation.fields()[1];
     }
 
     @Override
@@ -20,10 +21,6 @@ public class FieldsValueMatchValidator implements ConstraintValidator<FieldsMatc
         Object fieldMatchValue = new BeanWrapperImpl(value)
                 .getPropertyValue(fieldMatch);
 
-        if (fieldValue != null) {
-            return fieldValue.equals(fieldMatchValue);
-        } else {
-            return fieldMatchValue == null;
-        }
+        return fieldValue != null && fieldValue.equals(fieldMatchValue);
     }
 }

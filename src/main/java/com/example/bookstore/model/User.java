@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @Column(name = "shopping_address")
     private String shoppingAddress;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

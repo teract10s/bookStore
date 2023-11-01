@@ -6,8 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @FieldsMatch(
-        field = "password",
-        fieldMatch = "repeatedPassword",
+        fields = {"password", "repeatPassword"},
         message = "not repeated password"
 )
 public record UserRegistrationRequestDto(
