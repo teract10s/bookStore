@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changes/08-create-shopping_carts-table.yaml
   - include:
       file: db/changelog/changes/09-create-cart_items-table.yaml
+  - include:
+      file: db/changelog/changes/10-insert-default-roles.yaml
