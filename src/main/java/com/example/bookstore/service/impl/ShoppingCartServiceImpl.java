@@ -43,9 +43,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         Optional<CartItem> cartItemFromDB = cartItemRepository
-                .findByShoppingCartIdAndBookId(
-                        shoppingCart.getId(),
-                        cartItemRequestDto.bookId());
+                .findByShoppingCartIdAndBookId(shoppingCart.getId(), cartItemRequestDto.bookId());
         if (cartItemFromDB.isPresent()) {
             CartItem cartItem = cartItemFromDB.get();
             cartItem.setQuantity(cartItem.getQuantity() + cartItemRequestDto.quantity());
@@ -61,7 +59,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public CartItemDto updateQuantityOfCartItem(Long cartItemId, int quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                        .orElseThrow(() -> new EntityNotFoundException("Can't find cart item by id: " + cartItemId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find cart item by id: " + cartItemId));
         cartItem.setQuantity(quantity);
         return cartItemMapper.toDto(cartItemRepository.save(cartItem));
     }

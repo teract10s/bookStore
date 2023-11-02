@@ -11,8 +11,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "cart_items")
@@ -27,7 +25,7 @@ public class CartItem {
     @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", nullable = false)
     private ShoppingCart shoppingCart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
     private Book book;
 

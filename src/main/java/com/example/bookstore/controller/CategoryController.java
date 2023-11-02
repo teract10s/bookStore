@@ -71,8 +71,8 @@ public class CategoryController {
     @Operation(summary = "Update category")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CategoryResponseDto updateCategory(@PathVariable Long id,
-            @RequestBody @Valid CreateCategoryRequestDto categoryDto
+    public CategoryResponseDto updateCategory(
+            @PathVariable Long id, @RequestBody @Valid CreateCategoryRequestDto categoryDto
     ) {
         return categoryService.updateById(id, categoryDto);
     }

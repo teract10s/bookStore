@@ -4,15 +4,13 @@ import com.example.bookstore.dto.cart.items.CartItemDto;
 import com.example.bookstore.dto.cart.items.CreateCartItemRequestDto;
 import com.example.bookstore.dto.shopping.cart.CartItemUpdateRequestDto;
 import com.example.bookstore.dto.shopping.cart.ShoppingCartDto;
-import com.example.bookstore.model.User;
-import com.example.bookstore.security.CustomUserDetailsService;
 import com.example.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +33,7 @@ public class ShoppingCartController {
     @GetMapping
     @Operation(summary = "Get user's shopping cart")
     @ResponseStatus(code = HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER')")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         return shoppingCartService.getShoppingCartByUserId(authentication);
     }
@@ -42,6 +41,7 @@ public class ShoppingCartController {
     @PostMapping
     @Operation(summary = "Add cart item to user's shopping cart")
     @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
             @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto
@@ -52,7 +52,9 @@ public class ShoppingCartController {
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
     @ResponseStatus(code = HttpStatus.OK)
-    public CartItemDto updateCartQuantity(@PathVariable Long cartItemId,
+    @PreAuthorize("hasAuthority('USER')")
+    public CartItemDto updateCartQuantity(
+            @PathVariable Long cartItemId,
             @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
     ) {
         return shoppingCartService
@@ -62,6 +64,7 @@ public class ShoppingCartController {
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete cart item")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('USER')")
     public void deleteCartItem(@PathVariable Long cartItemId) {
         shoppingCartService.deleteCartItem(cartItemId);
     }

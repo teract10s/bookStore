@@ -81,8 +81,8 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDtoWithoutCategoryIds> search(BookSearchParameters searchParameters,
-                                @PageableDefault(page = 0, size = 10, sort = "title")
-                                Pageable pageable) {
+                                                  @PageableDefault(sort = "title")
+                                                  Pageable pageable) {
         return bookService.search(searchParameters, pageable);
     }
 }
