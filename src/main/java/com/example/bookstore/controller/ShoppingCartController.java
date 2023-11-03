@@ -54,18 +54,19 @@ public class ShoppingCartController {
     @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto updateCartQuantity(
+            Authentication authentication,
             @PathVariable Long cartItemId,
             @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
     ) {
         return shoppingCartService
-                .updateQuantityOfCartItem(cartItemId, cartItemUpdateRequestDto.quantity());
+                .updateQuantityOfCartItem(authentication, cartItemId, cartItemUpdateRequestDto.quantity());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete cart item")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('USER')")
-    public void deleteCartItem(@PathVariable Long cartItemId) {
-        shoppingCartService.deleteCartItem(cartItemId);
+    public void deleteCartItem(Authentication authentication, @PathVariable Long cartItemId) {
+        shoppingCartService.deleteCartItem(authentication, cartItemId);
     }
 }

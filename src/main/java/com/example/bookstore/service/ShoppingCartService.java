@@ -12,9 +12,9 @@ public interface ShoppingCartService {
     CartItemDto addCartItemToShoppingCart(CreateCartItemRequestDto cartItemRequestDto,
                                           Authentication authentication);
 
-    CartItemDto updateQuantityOfCartItem(Long cartItemId, int quantity);
+    CartItemDto updateQuantityOfCartItem(Authentication authentication, Long cartItemId, int quantity);
 
-    void deleteCartItem(Long cartItemId);
+    void deleteCartItem(Authentication authentication, Long cartItemId);
 
     ShoppingCartDto save(ShoppingCart shoppingCart);
 }

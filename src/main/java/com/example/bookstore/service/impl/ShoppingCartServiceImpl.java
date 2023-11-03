@@ -18,6 +18,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public CartItemDto addCartItemToShoppingCart(
             CreateCartItemRequestDto cartItemRequestDto, Authentication authentication
     ) {
@@ -57,17 +59,25 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartItemDto updateQuantityOfCartItem(Long cartItemId, int quantity) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+    public CartItemDto updateQuantityOfCartItem(Authentication authentication, Long cartItemId,
+                                                int quantity) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
+                        user.getShoppingCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cart item by id: " + cartItemId));
+                        "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
         cartItem.setQuantity(quantity);
         return cartItemMapper.toDto(cartItemRepository.save(cartItem));
     }
 
     @Override
-    public void deleteCartItem(Long cartItemId) {
-        cartItemRepository.deleteById(cartItemId);
+    public void deleteCartItem(Authentication authentication, Long cartItemId) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
+                        user.getShoppingCart().getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                       "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
+        cartItemRepository.delete(cartItem);
     }
 
     @Override
