@@ -59,7 +59,8 @@ public class ShoppingCartController {
             @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
     ) {
         return shoppingCartService
-                .updateQuantityOfCartItem(authentication, cartItemId, cartItemUpdateRequestDto.quantity());
+                .updateQuantityOfCartItem(authentication, cartItemId,
+                        cartItemUpdateRequestDto.quantity());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
