@@ -1,9 +1,13 @@
 package com.example.bookstore.service;
 
+import com.example.bookstore.dto.order.CreateOrderResponseDto;
+import com.example.bookstore.dto.order.CreateOrderRequestDto;
 import com.example.bookstore.dto.order.OrderDto;
-import com.example.bookstore.dto.order.OrderRequestDto;
-import com.example.bookstore.model.User;
+import java.util.List;
+import org.springframework.security.core.Authentication;
 
 public interface OrderService {
-    OrderDto createOrder(User user, OrderRequestDto orderRequestDto);
+    CreateOrderResponseDto createOrder(Authentication authentication, CreateOrderRequestDto orderRequestDto);
+
+    List<OrderDto> getOrders(Authentication authentication);
 }

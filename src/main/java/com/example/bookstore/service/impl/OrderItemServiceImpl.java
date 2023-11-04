@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
-    private final OrderItemRepository orderItemRepository;
-
     @Override
     public Set<OrderItem> loadByCartItems(Order order, Set<CartItem> cartItems) {
         Function<CartItem, OrderItem> applier = ci -> {
@@ -29,11 +27,8 @@ public class OrderItemServiceImpl implements OrderItemService {
             return oi;
         };
 
-        Set<OrderItem> orderItems =  cartItems.stream()
+        return cartItems.stream()
                 .map(applier)
                 .collect(Collectors.toSet());
-
-        orderItemRepository.saveAll(orderItems);
-        return orderItems;
     }
 }
