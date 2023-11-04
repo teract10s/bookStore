@@ -1,8 +1,7 @@
 package com.example.bookstore.mapper;
 
-
-import com.example.bookstore.dto.order.CreateOrderResponseDto;
 import com.example.bookstore.dto.order.OrderDto;
+import com.example.bookstore.dto.order.OrderWithoutItemsDto;
 import com.example.bookstore.dto.order.items.OrderItemDto;
 import com.example.bookstore.model.Order;
 import com.example.bookstore.model.OrderItem;
@@ -17,7 +16,7 @@ import org.mapstruct.NullValueCheckStrategy;
         implementationPackage = "<PACKAGE_NAME>.impl")
 public interface OrderMapper {
     @Mapping(source = "order.id", target = "orderId")
-    CreateOrderResponseDto toResponseDto(Order order);
+    OrderWithoutItemsDto toDtoWithoutItems(Order order);
 
     @Mapping(source = "user.id", target = "userId")
     OrderDto toDto(Order order);

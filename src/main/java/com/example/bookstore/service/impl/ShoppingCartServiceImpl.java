@@ -76,7 +76,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
                         user.getShoppingCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                       "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
+                        "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
         cartItemRepository.delete(cartItem);
     }
 

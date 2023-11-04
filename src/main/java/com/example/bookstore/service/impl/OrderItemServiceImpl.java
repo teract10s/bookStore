@@ -3,7 +3,6 @@ package com.example.bookstore.service.impl;
 import com.example.bookstore.model.CartItem;
 import com.example.bookstore.model.Order;
 import com.example.bookstore.model.OrderItem;
-import com.example.bookstore.repository.OrderItemRepository;
 import com.example.bookstore.service.OrderItemService;
 import java.math.BigDecimal;
 import java.util.Set;

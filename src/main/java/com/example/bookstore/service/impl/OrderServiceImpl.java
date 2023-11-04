@@ -1,14 +1,18 @@
 package com.example.bookstore.service.impl;
 
-import com.example.bookstore.dto.order.CreateOrderResponseDto;
 import com.example.bookstore.dto.order.CreateOrderRequestDto;
 import com.example.bookstore.dto.order.OrderDto;
+import com.example.bookstore.dto.order.OrderWithoutItemsDto;
+import com.example.bookstore.dto.order.UpdateOrderDto;
+import com.example.bookstore.dto.order.items.OrderItemDto;
+import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.mapper.OrderMapper;
 import com.example.bookstore.model.Order;
 import com.example.bookstore.model.OrderItem;
 import com.example.bookstore.model.ShoppingCart;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.CartItemRepository;
+import com.example.bookstore.repository.OrderItemRepository;
 import com.example.bookstore.repository.OrderRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
 import com.example.bookstore.service.OrderItemService;
@@ -31,19 +35,21 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemService orderItemService;
     private final UserDetailsService userDetailsService;
     private final CartItemRepository cartItemRepository;
-
+    private final OrderItemRepository orderItemRepository;
 
     @Override
-    public CreateOrderResponseDto createOrder(Authentication authentication, CreateOrderRequestDto orderRequestDto) {
+    public OrderWithoutItemsDto createOrder(Authentication authentication,
+                                            CreateOrderRequestDto orderRequestDto) {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         Order order = init(user, orderRequestDto.address());
 
-        Set<OrderItem> orderItems = orderItemService.loadByCartItems(order, shoppingCart.getCartItems());
+        Set<OrderItem> orderItems = orderItemService.loadByCartItems(order,
+                shoppingCart.getCartItems());
         order.setTotal(countPrice(orderItems));
         order.setOrderItems(orderItems);
         cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
-        return orderMapper.toResponseDto(orderRepository.save(order));
+        return orderMapper.toDtoWithoutItems(orderRepository.save(order));
     }
 
     @Override
@@ -53,6 +59,40 @@ public class OrderServiceImpl implements OrderService {
         return orders.stream()
                 .map(orderMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public OrderWithoutItemsDto updateStatus(Long id, UpdateOrderDto updateOrderDto) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find order by id: " + id));
+        order.setStatus(updateOrderDto.status());
+        return orderMapper.toDtoWithoutItems(orderRepository.save(order));
+    }
+
+    @Override
+    public List<OrderItemDto> getItemsByOrderId(Authentication authentication, Long orderId) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        Order order = isUserOrderCheck(user, orderId);
+        return order.getOrderItems().stream()
+                .map(orderMapper::toOrderItemDto)
+                .toList();
+    }
+
+    @Override
+    public OrderItemDto getItemByOrderIdAndItemId(Authentication authentication,
+                                                  Long orderId, Long itemId) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        Order order = isUserOrderCheck(user, orderId);
+        OrderItem orderItem = orderItemRepository.findByIdAndOrder(itemId, order)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find item with id: "
+                        + itemId + " in order with id: " + orderId));
+        return orderMapper.toOrderItemDto(orderItem);
+    }
+
+    private Order isUserOrderCheck(User user, Long orderId) {
+        return orderRepository.findByIdAndUserId(orderId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Can't find order with id: "
+                        + orderId + " in user history"));
     }
 
     private BigDecimal countPrice(Set<OrderItem> orderItems) {
