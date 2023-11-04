@@ -5,6 +5,7 @@ import com.example.bookstore.dto.user.UserResponseDto;
 import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.mapper.UserMapper;
 import com.example.bookstore.model.Role;
+import com.example.bookstore.model.ShoppingCart;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.RoleRepository;
 import com.example.bookstore.repository.UserRepository;
@@ -23,15 +24,21 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public UserResponseDto register(UserRegistrationRequestDto request)
-            throws RegistrationException {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
+    public UserResponseDto register(UserRegistrationRequestDto request) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new RegistrationException("Unable to complete registration");
         }
         Role defaultRole = roleRepository.getRoleByName(Role.RoleName.USER);
         User user = userMapper.toUser(request);
         user.setRoles(Set.of(defaultRole));
         user.setPassword(encoder.encode(request.password()));
+        createShoppingCart(user);
         return userMapper.toDto(userRepository.save(user));
+    }
+
+    private static void createShoppingCart(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        user.setShoppingCart(shoppingCart);
     }
 }

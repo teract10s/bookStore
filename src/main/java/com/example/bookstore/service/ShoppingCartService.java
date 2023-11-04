@@ -3,14 +3,19 @@ package com.example.bookstore.service;
 import com.example.bookstore.dto.cart.items.CartItemDto;
 import com.example.bookstore.dto.cart.items.CreateCartItemRequestDto;
 import com.example.bookstore.dto.shopping.cart.ShoppingCartDto;
-import com.example.bookstore.model.User;
+import com.example.bookstore.model.ShoppingCart;
+import org.springframework.security.core.Authentication;
 
 public interface ShoppingCartService {
-    ShoppingCartDto getShoppingCartByUserId(Long id);
+    ShoppingCartDto getShoppingCartByUserId(Authentication authentication);
 
-    CartItemDto addCartItemToShoppingCart(CreateCartItemRequestDto cartItemRequestDto, User user);
+    CartItemDto addCartItemToShoppingCart(CreateCartItemRequestDto cartItemRequestDto,
+                                          Authentication authentication);
 
-    CartItemDto updateQuantityOfCartItem(User user, Long cartItemId, int quantity);
+    CartItemDto updateQuantityOfCartItem(Authentication authentication,
+                                         Long cartItemId, int quantity);
 
-    void deleteCartItem(User user, Long cartItemId);
+    void deleteCartItem(Authentication authentication, Long cartItemId);
+
+    ShoppingCartDto save(ShoppingCart shoppingCart);
 }

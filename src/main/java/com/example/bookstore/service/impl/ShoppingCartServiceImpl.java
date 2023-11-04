@@ -12,10 +12,13 @@ import com.example.bookstore.model.User;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.CartItemRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
+import com.example.bookstore.security.CustomUserDetailsService;
 import com.example.bookstore.service.ShoppingCartService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,22 +28,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final BookRepository bookRepository;
     private final ShoppingCartMapper shoppingCartMapper;
     private final CartItemMapper cartItemMapper;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
-    public ShoppingCartDto getShoppingCartByUserId(Long id) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(id);
+    public ShoppingCartDto getShoppingCartByUserId(Authentication authentication) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
     @Override
+    @Transactional
     public CartItemDto addCartItemToShoppingCart(
-            CreateCartItemRequestDto cartItemRequestDto, User user
+            CreateCartItemRequestDto cartItemRequestDto, Authentication authentication
     ) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         Optional<CartItem> cartItemFromDB = cartItemRepository
-                .findByShoppingCartIdAndBookId(
-                        shoppingCart.getId(),
-                        cartItemRequestDto.bookId());
+                .findByShoppingCartIdAndBookId(shoppingCart.getId(), cartItemRequestDto.bookId());
         if (cartItemFromDB.isPresent()) {
             CartItem cartItem = cartItemFromDB.get();
             cartItem.setQuantity(cartItem.getQuantity() + cartItemRequestDto.quantity());
@@ -54,26 +59,29 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartItemDto updateQuantityOfCartItem(User user, Long cartItemId, int quantity) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        CartItem cartItem = cartItemRepository
-                .findCartItemByIdAndShoppingCart(cartItemId, shoppingCart)
+    public CartItemDto updateQuantityOfCartItem(Authentication authentication, Long cartItemId,
+                                                int quantity) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
+                        user.getShoppingCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cart item by id: " + cartItemId
-                                + " and user_id: " + user.getId()));
+                        "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
         cartItem.setQuantity(quantity);
-        CartItemDto result = cartItemMapper.toDto(cartItem);
-        cartItemRepository.save(cartItem);
-        return result;
+        return cartItemMapper.toDto(cartItemRepository.save(cartItem));
     }
 
     @Override
-    public void deleteCartItem(User user, Long cartItemId) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        cartItemRepository.findCartItemByIdAndShoppingCart(cartItemId, shoppingCart)
+    public void deleteCartItem(Authentication authentication, Long cartItemId) {
+        User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+        CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
+                        user.getShoppingCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cart item by id: " + cartItemId
-                                + " and user_id: " + user.getId()));
-        cartItemRepository.deleteById(cartItemId);
+                       "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
+        cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    public ShoppingCartDto save(ShoppingCart shoppingCart) {
+        return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
     }
 }
