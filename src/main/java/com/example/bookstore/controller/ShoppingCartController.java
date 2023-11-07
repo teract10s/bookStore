@@ -44,8 +44,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
-            @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto
-    ) {
+            @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto) {
         return shoppingCartService.addCartItemToShoppingCart(cartItemRequestDto, authentication);
     }
 
@@ -56,8 +55,7 @@ public class ShoppingCartController {
     public CartItemDto updateCartQuantity(
             Authentication authentication,
             @PathVariable Long cartItemId,
-            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
-    ) {
+            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto) {
         return shoppingCartService
                 .updateQuantityOfCartItem(authentication, cartItemId,
                         cartItemUpdateRequestDto.quantity());
