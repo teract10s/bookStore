@@ -8,6 +8,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
@@ -18,11 +19,6 @@ public interface ShoppingCartMapper {
     ShoppingCartDto toDto(ShoppingCart shoppingCart);
 
     default CartItemDto toCartItemDto(CartItem cartItem) {
-        return new CartItemDto(
-                cartItem.getId(),
-                cartItem.getBook().getId(),
-                cartItem.getBook().getTitle(),
-                cartItem.getQuantity()
-        );
+        return Mappers.getMapper(CartItemMapper.class).toDto(cartItem);
     }
 }

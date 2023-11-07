@@ -54,7 +54,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL, orphanRemoval = true)
+            cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     private ShoppingCart shoppingCart;
 
     @Column(name = "is_deleted", nullable = false)

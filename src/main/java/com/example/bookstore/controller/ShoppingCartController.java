@@ -32,7 +32,6 @@ public class ShoppingCartController {
 
     @GetMapping
     @Operation(summary = "Get user's shopping cart")
-    @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         return shoppingCartService.getShoppingCartByUserId(authentication);
@@ -40,7 +39,6 @@ public class ShoppingCartController {
 
     @PostMapping
     @Operation(summary = "Add cart item to user's shopping cart")
-    @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
@@ -50,7 +48,6 @@ public class ShoppingCartController {
 
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
-    @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto updateCartQuantity(
             Authentication authentication,

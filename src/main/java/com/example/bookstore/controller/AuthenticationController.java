@@ -30,7 +30,6 @@ public class AuthenticationController {
     @Operation(summary = "Login",
             description = "login by email and password")
     @PostMapping("/login")
-    @ResponseStatus(code = HttpStatus.OK)
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authenticationService.authenticate(request);
     }
