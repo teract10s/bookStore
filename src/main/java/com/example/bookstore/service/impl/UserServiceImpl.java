@@ -5,6 +5,7 @@ import com.example.bookstore.dto.user.UserResponseDto;
 import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.mapper.UserMapper;
 import com.example.bookstore.model.Role;
+import com.example.bookstore.model.ShoppingCart;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.RoleRepository;
 import com.example.bookstore.repository.UserRepository;
@@ -31,6 +32,13 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(request);
         user.setRoles(Set.of(defaultRole));
         user.setPassword(encoder.encode(request.password()));
+        createShoppingCart(user);
         return userMapper.toDto(userRepository.save(user));
+    }
+
+    private void createShoppingCart(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        user.setShoppingCart(shoppingCart);
     }
 }

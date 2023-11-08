@@ -28,14 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Category management", description = "Endpoints for managing category")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/categories")
+@RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
     @GetMapping
     @Operation(summary = "Get all categories")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public List<CategoryResponseDto> getAll(@PageableDefault(sort = "name") Pageable pageable) {
         return categoryService.getAll(pageable);
@@ -44,7 +43,6 @@ public class CategoryController {
     @GetMapping("/{categoryId}/books")
     @Operation(summary = "Get books by category",
             description = "Getting books by receiving categoryId in path")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDtoWithoutCategoryIds> getBooksByCategory(@PathVariable Long categoryId) {
         return bookService.getBookByCategoryId(categoryId);
@@ -52,7 +50,6 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get category by id")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public CategoryResponseDto getCategory(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
@@ -69,10 +66,9 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update category")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CategoryResponseDto updateCategory(@PathVariable Long id,
-            @RequestBody @Valid CreateCategoryRequestDto categoryDto
+    public CategoryResponseDto updateCategory(
+            @PathVariable Long id, @RequestBody @Valid CreateCategoryRequestDto categoryDto
     ) {
         return categoryService.updateById(id, categoryDto);
     }

@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-roles-table
+      id: create-shopping_carts-table
       author: teract10s
       changes:
         - createTable:
-            tableName: roles
+            tableName: shopping_carts
             columns:
               - column:
                   name: id
@@ -14,8 +14,8 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
-                  type: varchar(255)
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
                   constraints:
-                    unique: true
                     nullable: false
