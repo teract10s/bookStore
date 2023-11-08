@@ -32,7 +32,6 @@ public class ShoppingCartController {
 
     @GetMapping
     @Operation(summary = "Get user's shopping cart")
-    @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         return shoppingCartService.getShoppingCartByUserId(authentication);
@@ -40,24 +39,20 @@ public class ShoppingCartController {
 
     @PostMapping
     @Operation(summary = "Add cart item to user's shopping cart")
-    @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
-            @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto
-    ) {
+            @RequestBody @Valid CreateCartItemRequestDto cartItemRequestDto) {
         return shoppingCartService.addCartItemToShoppingCart(cartItemRequestDto, authentication);
     }
 
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
-    @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto updateCartQuantity(
             Authentication authentication,
             @PathVariable Long cartItemId,
-            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto
-    ) {
+            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto) {
         return shoppingCartService
                 .updateQuantityOfCartItem(authentication, cartItemId,
                         cartItemUpdateRequestDto.quantity());

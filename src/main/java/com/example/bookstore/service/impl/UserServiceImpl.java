@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userRepository.save(user));
     }
 
-    private static void createShoppingCart(User user) {
+    private void createShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
         user.setShoppingCart(shoppingCart);

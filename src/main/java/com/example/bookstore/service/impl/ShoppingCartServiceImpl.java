@@ -40,8 +40,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional
     public CartItemDto addCartItemToShoppingCart(
-            CreateCartItemRequestDto cartItemRequestDto, Authentication authentication
-    ) {
+            CreateCartItemRequestDto cartItemRequestDto, Authentication authentication) {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         Optional<CartItem> cartItemFromDB = cartItemRepository

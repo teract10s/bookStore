@@ -33,7 +33,6 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all books", description = "Get a list of all available books")
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDto> getAll(
@@ -43,7 +42,6 @@ public class BookController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one book by id", description = "Get a bookDto by id")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
@@ -59,7 +57,6 @@ public class BookController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update book", description = "Update book by id")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
     public BookDto updateBook(
             @PathVariable Long id, @RequestBody CreateBookRequestDto createBookRequestDto) {
@@ -78,7 +75,6 @@ public class BookController {
     @GetMapping("/search")
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDtoWithoutCategoryIds> search(BookSearchParameters searchParameters,
                                                   @PageableDefault(sort = "title")
