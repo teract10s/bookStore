@@ -8,10 +8,12 @@ import com.example.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @Tag(name = "Shopping cart management",
         description = "Endpoints for managing user's shopping cart")
 @RestController
@@ -51,8 +54,8 @@ public class ShoppingCartController {
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto updateCartQuantity(
             Authentication authentication,
-            @PathVariable Long cartItemId,
-            @RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto) {
+            @Positive @PathVariable Long cartItemId,
+            @RequestBody @Valid CartItemUpdateRequestDto cartItemUpdateRequestDto) {
         return shoppingCartService
                 .updateQuantityOfCartItem(authentication, cartItemId,
                         cartItemUpdateRequestDto.quantity());
@@ -62,7 +65,8 @@ public class ShoppingCartController {
     @Operation(summary = "Delete cart item")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('USER')")
-    public void deleteCartItem(Authentication authentication, @PathVariable Long cartItemId) {
+    public void deleteCartItem(Authentication authentication,
+                               @Positive @PathVariable Long cartItemId) {
         shoppingCartService.deleteCartItem(authentication, cartItemId);
     }
 }

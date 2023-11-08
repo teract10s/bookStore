@@ -14,6 +14,7 @@ import com.example.bookstore.repository.CartItemRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
 import com.example.bookstore.security.CustomUserDetailsService;
 import com.example.bookstore.service.ShoppingCartService;
+import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -82,5 +83,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto save(ShoppingCart shoppingCart) {
         return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
+    }
+
+    @Override
+    public void clearShoppingCart(ShoppingCart shoppingCart) {
+        cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
+        shoppingCart.setCartItems(Collections.emptySet());
     }
 }

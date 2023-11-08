@@ -31,7 +31,7 @@ public class ShoppingCart {
     @JoinColumn(name = "id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems;
 
     @Column(name = "is_deleted", nullable = false)

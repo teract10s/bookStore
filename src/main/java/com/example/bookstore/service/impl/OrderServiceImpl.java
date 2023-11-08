@@ -6,17 +6,18 @@ import com.example.bookstore.dto.order.OrderWithoutItemsDto;
 import com.example.bookstore.dto.order.UpdateOrderDto;
 import com.example.bookstore.dto.order.items.OrderItemDto;
 import com.example.bookstore.exception.EntityNotFoundException;
+import com.example.bookstore.mapper.OrderItemMapper;
 import com.example.bookstore.mapper.OrderMapper;
 import com.example.bookstore.model.Order;
 import com.example.bookstore.model.OrderItem;
 import com.example.bookstore.model.ShoppingCart;
 import com.example.bookstore.model.User;
-import com.example.bookstore.repository.CartItemRepository;
 import com.example.bookstore.repository.OrderItemRepository;
 import com.example.bookstore.repository.OrderRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
 import com.example.bookstore.service.OrderItemService;
 import com.example.bookstore.service.OrderService;
+import com.example.bookstore.service.ShoppingCartService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,23 +34,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
     private final OrderItemService orderItemService;
     private final UserDetailsService userDetailsService;
-    private final CartItemRepository cartItemRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
+    @Transactional
     public OrderWithoutItemsDto createOrder(Authentication authentication,
                                             CreateOrderRequestDto orderRequestDto) {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        Order order = init(user, orderRequestDto.address());
-
-        Set<OrderItem> orderItems = orderItemService.loadByCartItems(order,
-                shoppingCart.getCartItems());
-        order.setTotal(countPrice(orderItems));
-        order.setOrderItems(orderItems);
-        cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
+        Order order = createInitializedOrder(user, orderRequestDto.address(), shoppingCart);
+        shoppingCartService.clearShoppingCart(shoppingCart);
         return orderMapper.toDtoWithoutItems(orderRepository.save(order));
     }
 
@@ -74,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
         Order order = isUserOrderCheck(user, orderId);
         return order.getOrderItems().stream()
-                .map(orderMapper::toOrderItemDto)
+                .map(orderItemMapper::toDto)
                 .toList();
     }
 
@@ -86,7 +85,20 @@ public class OrderServiceImpl implements OrderService {
         OrderItem orderItem = orderItemRepository.findByIdAndOrder(itemId, order)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find item with id: "
                         + itemId + " in order with id: " + orderId));
-        return orderMapper.toOrderItemDto(orderItem);
+        return orderItemMapper.toDto(orderItem);
+    }
+
+    private Order createInitializedOrder(User user, String address, ShoppingCart shoppingCart) {
+        Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(Order.Status.IN_PROGRESS);
+        order.setUser(user);
+        order.setShippingAddress(address);
+        Set<OrderItem> orderItems = orderItemService.loadByCartItems(order,
+                shoppingCart.getCartItems());
+        order.setTotal(countPrice(orderItems));
+        order.setOrderItems(orderItems);
+        return order;
     }
 
     private Order isUserOrderCheck(User user, Long orderId) {
@@ -96,19 +108,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private BigDecimal countPrice(Set<OrderItem> orderItems) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (OrderItem orderItem : orderItems) {
-            sum = sum.add(orderItem.getPrice());
-        }
-        return sum;
-    }
-
-    private Order init(User user, String address) {
-        Order order = new Order();
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(Order.Status.IN_PROGRESS);
-        order.setUser(user);
-        order.setShippingAddress(address);
-        return order;
+        return orderItems.stream()
+                .map(OrderItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

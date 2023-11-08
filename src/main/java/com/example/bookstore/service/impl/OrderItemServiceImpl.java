@@ -16,7 +16,13 @@ import org.springframework.stereotype.Service;
 public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public Set<OrderItem> loadByCartItems(Order order, Set<CartItem> cartItems) {
-        Function<CartItem, OrderItem> applier = ci -> {
+        return cartItems.stream()
+                .map(getCartItemOrderItemConverter(order))
+                .collect(Collectors.toSet());
+    }
+
+    private Function<CartItem, OrderItem> getCartItemOrderItemConverter(Order order) {
+        return ci -> {
             OrderItem oi = new OrderItem();
             oi.setBook(ci.getBook());
             oi.setQuantity(ci.getQuantity());
@@ -25,9 +31,5 @@ public class OrderItemServiceImpl implements OrderItemService {
             oi.setOrder(order);
             return oi;
         };
-
-        return cartItems.stream()
-                .map(applier)
-                .collect(Collectors.toSet());
     }
 }

@@ -19,7 +19,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "order_items")
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE categories SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE order_items SET is_deleted = true WHERE id = ?")
 @Where(clause = "is_deleted=false")
 public class OrderItem {
     @Id
@@ -27,11 +27,11 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @Column(nullable = false)

@@ -9,10 +9,12 @@ import com.example.bookstore.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @Tag(name = "Order controller", description = "Endpoints for managing orders")
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +52,7 @@ public class OrderController {
     @Operation(summary = "Update order status")
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public OrderWithoutItemsDto updateOrderStatus(@PathVariable Long id,
+    public OrderWithoutItemsDto updateOrderStatus(@Positive @PathVariable Long id,
                                                   @RequestBody UpdateOrderDto updateOrderDto) {
         return orderService.updateStatus(id, updateOrderDto);
     }
@@ -59,7 +62,7 @@ public class OrderController {
     @GetMapping("/{orderId}/items")
     @PreAuthorize("hasAuthority('USER')")
     public List<OrderItemDto> getOrderItems(Authentication authentication,
-                                            @PathVariable Long orderId) {
+                                            @Positive @PathVariable Long orderId) {
         return orderService.getItemsByOrderId(authentication, orderId);
     }
 
@@ -67,8 +70,9 @@ public class OrderController {
             description = "Retrieve a specific OrderItem within an order")
     @GetMapping("/{orderId}/items/{itemId}")
     @PreAuthorize("hasAuthority('USER')")
-    public OrderItemDto getOrderItem(Authentication authentication, @PathVariable Long orderId,
-                                     @PathVariable Long itemId) {
+    public OrderItemDto getOrderItem(Authentication authentication,
+                                     @Positive @PathVariable Long orderId,
+                                     @Positive @PathVariable Long itemId) {
         return orderService.getItemByOrderIdAndItemId(authentication, orderId, itemId);
     }
 }
