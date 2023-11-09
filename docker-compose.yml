@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  book-store-db:
+    restart: unless-stopped
+    container_name: book-store-db
+    image: mysql
+    env_file: ./.env
+    environment:
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DB=$MYSQL_DB
+    ports:
+      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+    healthcheck:
+      test: ["CMD"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  book-store-app:
+    depends_on:
+      - book-store-db
+    restart: on-failure
+    container_name: book-store-app
+    image: book-store-app
+    build: .
+    env_file: ./.env
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+      - $DEBUG_PORT:$DEBUG_PORT
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url" : "jdbc:mysql://localhost:$MYSQL_DOCKER_PORT/$MYSQL_DB?serverTimezone=UTC",
+        "spring.datasource.username" : "$MYSQL_USER",
+        "spring.datasource.password" : "$MYSQL_ROOT_PASSWORD",
+        "bookstore.openapi.dev-url" : "http://localhost:$SPRING_LOCAL_PORT"
+      }'
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
