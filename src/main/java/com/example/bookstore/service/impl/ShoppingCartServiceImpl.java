@@ -14,6 +14,7 @@ import com.example.bookstore.repository.CartItemRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
 import com.example.bookstore.security.CustomUserDetailsService;
 import com.example.bookstore.service.ShoppingCartService;
+import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -75,12 +76,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CartItem cartItem = cartItemRepository.findCartItemByIdAndShoppingCartId(cartItemId,
                         user.getShoppingCart().getId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                       "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
+                        "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
         cartItemRepository.delete(cartItem);
     }
 
     @Override
     public ShoppingCartDto save(ShoppingCart shoppingCart) {
         return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
+    }
+
+    @Override
+    public void clearShoppingCart(ShoppingCart shoppingCart) {
+        shoppingCart.setCartItems(Collections.emptySet());
+        cartItemRepository.deleteAllByShoppingCartId(shoppingCart.getId());
     }
 }
