@@ -51,7 +51,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     @Operation(summary = "Get category by id")
     @PreAuthorize("hasAuthority('USER')")
-    public CategoryResponseDto getCategory(@PathVariable Long id) {
+    public CategoryResponseDto getCategoryById(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
     }
 

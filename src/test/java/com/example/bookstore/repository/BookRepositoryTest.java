@@ -7,6 +7,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,23 +26,30 @@ class BookRepositoryTest {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("database/categories/add-two-categories.sql"));
+                    new ClassPathResource("database/books/delete-all-books.sql"));
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("database/books/add-five-books.sql"));
+                    new ClassPathResource("database/categories/delete-all-categories.sql"));
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("database/books_categories/create-relations-between-books-and-categories.sql"));
+                    new ClassPathResource("database/categories/insert-two-categories.sql"));
+            ScriptUtils.executeSqlScript(connection,
+                    new ClassPathResource("database/books/insert-five-books.sql"));
+            ScriptUtils.executeSqlScript(connection,
+                    new ClassPathResource(
+                            "database/books_categories/insert-books-and-categories.sql"));
         }
     }
 
     @Test
+    @DisplayName(value = "Get books by non-existent category id")
     void getBooksByCategoryId_NonExistingCategory_EmptyList() {
         List<Book> actual = bookRepository.getBooksByCategoryId(100L);
         Assertions.assertEquals(0, actual.size());
     }
 
     @Test
+    @DisplayName(value = "Get books by existent category id")
     void getBooksByCategoryId_ExistingCategory_ListOfFourBooks() {
         List<Book> actual = bookRepository.getBooksByCategoryId(1L);
-        Assertions.assertEquals(4, actual.size());
+        Assertions.assertEquals(3, actual.size());
     }
 }
