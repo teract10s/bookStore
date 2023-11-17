@@ -78,7 +78,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item by id: " + cartItemId + " in your shopping cart"));
         cartItemRepository.delete(cartItem);
-    }
+}
 
     @Override
     public ShoppingCartDto save(ShoppingCart shoppingCart) {
