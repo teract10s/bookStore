@@ -98,6 +98,7 @@ class ShoppingCartControllerTest {
     @DisplayName("Update quantity of cart item")
     @WithMockUser(username = "test@gmail.com", authorities = {"USER"})
     @Sql(scripts = {"classpath:database/cart-items/delete-all-cart-items.sql",
+            "classpath:database/books/delete-all-books.sql",
             "classpath:database/shopping-cart/delete-all-carts.sql",
             "classpath:database/users/delete-all-users.sql",
             "classpath:database/books/insert-five-books.sql",
