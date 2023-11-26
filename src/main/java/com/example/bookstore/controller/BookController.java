@@ -6,6 +6,7 @@ import com.example.bookstore.dto.book.BookSearchParameters;
 import com.example.bookstore.dto.book.CreateBookRequestDto;
 import com.example.bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -34,6 +35,7 @@ public class BookController {
 
     @GetMapping
     @Operation(summary = "Get all books", description = "Get a list of all available books")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDto> getAll(
             @PageableDefault(page = 0, size = 10, sort = "title") Pageable pageable) {
@@ -42,6 +44,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one book by id", description = "Get a bookDto by id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
@@ -49,6 +52,7 @@ public class BookController {
 
     @PostMapping
     @Operation(summary = "Create a new book", description = "Create a new book")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
     public BookDtoWithoutCategoryIds createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
@@ -57,6 +61,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update book", description = "Update book by id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     public BookDto updateBook(
             @PathVariable Long id, @RequestBody CreateBookRequestDto createBookRequestDto) {
@@ -65,6 +70,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete book", description = "Delete book by id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
@@ -75,6 +81,7 @@ public class BookController {
     @GetMapping("/search")
     @Operation(summary = "Get all books by parameters",
             description = "Get list of all available books by parameters")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDtoWithoutCategoryIds> search(BookSearchParameters searchParameters,
                                                   @PageableDefault(sort = "title")

@@ -7,6 +7,7 @@ import com.example.bookstore.dto.order.UpdateOrderDto;
 import com.example.bookstore.dto.order.items.OrderItemDto;
 import com.example.bookstore.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -33,6 +34,7 @@ public class OrderController {
 
     @Operation(summary = "Create order",
             description = "Create order by items in shopping cart")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
     public OrderWithoutItemsDto createOrder(
@@ -43,6 +45,7 @@ public class OrderController {
 
     @Operation(summary = "Get orders",
             description = "Retrieve user's order history")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
     public List<OrderDto> getOrders(Authentication authentication) {
@@ -50,6 +53,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Update order status")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public OrderWithoutItemsDto updateOrderStatus(@Positive @PathVariable Long id,
@@ -59,6 +63,7 @@ public class OrderController {
 
     @Operation(summary = "Get order's items",
             description = "Retrieve all OrderItems for a specific order")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{orderId}/items")
     @PreAuthorize("hasAuthority('USER')")
     public List<OrderItemDto> getOrderItems(Authentication authentication,
@@ -68,6 +73,7 @@ public class OrderController {
 
     @Operation(summary = "Get order's item",
             description = "Retrieve a specific OrderItem within an order")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{orderId}/items/{itemId}")
     @PreAuthorize("hasAuthority('USER')")
     public OrderItemDto getOrderItem(Authentication authentication,
