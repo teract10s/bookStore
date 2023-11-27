@@ -29,7 +29,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  value: "1"
+                  value: "99"
               - column:
                   name: role_id
                   value: "1"
