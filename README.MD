@@ -115,7 +115,7 @@ JWT tokens are generated upon successful user authentication. The following step
 
 ## **🏁6. Getting Started**
 
-Here you can test book store API:HERE_WILL_URL
+Here you can test book store API:http://ec2-3-88-176-243.compute-1.amazonaws.com/api/swagger-ui/index.html#/
 
 If you want access `ADMIN` role you can use next credentials:
 - email: `admin@gmail.com`
