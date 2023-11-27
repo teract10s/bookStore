@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-user
+      author: teract10s
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: "1"
+              - column:
+                  name: email
+                  value: "admin@gmail.com"
+              - column:
+                  name: password
+                  value: "$2a$10$Gr4q6uuQmyz8pZms4LQkPum4hlxtnOBSVf8ecFMxlSIvHmrDYuFVa"
+              - column:
+                  name: first_name
+                  value: "admin"
+              - column:
+                  name: last_name
+                  value: "admin"
+              - column:
+                  name: shopping_address
+                  value: "address"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: "1"
+              - column:
+                  name: role_id
+                  value: "1"
