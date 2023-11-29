@@ -59,6 +59,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public CartItemDto updateQuantityOfCartItem(Authentication authentication, Long cartItemId,
                                                 int quantity) {
         User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
