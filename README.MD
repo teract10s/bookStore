@@ -5,10 +5,13 @@ Hibernate, Liquibase, and other technologies to create a robust online bookstore
 
 ## **📝1. Introduction**
 
-This project is an online bookstore that provides a platform for users to explore and purchase books. It is built using
-Java with the Spring Boot framework, utilizing technologies like Hibernate for database interaction, Liquibase for
-database versioning, Swagger for API documentation, and JWT for secure user authentication.
-
+This project is an online bookstore that provides a platform for users to browse and purchase books. 
+It is built using Java with a Spring Boot infrastructure, using technologies such as Hibernate for 
+database interaction, Liquibase for database versioning, Swagger for API documentation, and JWT for 
+secure user authentication. There can also be 2 types of users, USER and ADMIN. Accordingly, the 
+USER can create an order, place a shopping cart, view existing resources, and his history. At that 
+time, ADIMIN can do everything that USER can, as well as change USER's order status, update and 
+delete resources.
 ## **💻2. Technologies Used**
 
 * Java 17
