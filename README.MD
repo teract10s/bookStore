@@ -91,7 +91,7 @@ database versioning, Swagger for API documentation, and JWT for secure user auth
 The security module in this project relies on JSON Web Tokens (JWT) for user authentication and authorization. JWT is a compact, URL-safe means of representing claims to be transferred between two parties. In this context, it is used to securely manage user sessions and authorize access to protected resources.
 
 ## **📹6. Video demo**
-Link for demonstration of API
+Link for demonstration of API: https://www.loom.com/share/ce182b95f1df41c9b405e121f4ce977b
 
 ## **🏁7. Getting Started**
 If you want locally run this project follow these steps:
