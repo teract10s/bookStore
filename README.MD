@@ -3,15 +3,6 @@
 Welcome to the Online Book Store project! This project is a Java-based web application built using Spring Boot,
 Hibernate, Liquibase, and other technologies to create a robust online bookstore.
 
-## **Table of Contents**
-
-1. ### [📝Introduction](#1-introduction)
-2. ### [💻Technologies Used](#2-technologies-used)
-3. ### [💾Database structure](#3-database-structure)
-4. ### [📃API Documentation](#4-api-documentation)
-5. ### [🪪Security](#5-security)
-6. ### [🏁Getting Started](#6-getting-started)
-
 ## **📝1. Introduction**
 
 This project is an online bookstore that provides a platform for users to explore and purchase books. It is built using
@@ -21,10 +12,10 @@ database versioning, Swagger for API documentation, and JWT for secure user auth
 ## **💻2. Technologies Used**
 
 * Java 17
-* Spring (Boot, Web, JPA, Security)
+* Spring v3.1.4 (Boot, Web, JPA, Security)
 * Hibernate
-* Liquibase
-* Docker
+* Liquibase v4.20.0
+* Docker 3.8
 * AWS
 * JUnit 5
 * Mockito
@@ -99,23 +90,20 @@ database versioning, Swagger for API documentation, and JWT for secure user auth
 ### Overview
 The security module in this project relies on JSON Web Tokens (JWT) for user authentication and authorization. JWT is a compact, URL-safe means of representing claims to be transferred between two parties. In this context, it is used to securely manage user sessions and authorize access to protected resources.
 
-### Token Generation
-JWT tokens are generated upon successful user authentication. The following steps are involved in token generation:
+## **📹6. Video demo**
+Link for demonstration of API
 
-1. <b>User Authentication:</b>
-   - Users must authenticate using their credentials (e.g., username and password).
-   - Successful authentication triggers the generation of a JWT token.
-2. <b>Token Payload:</b>
-   - The token payload contains relevant information about the user, such as user ID, roles, and expiration time.
-3. <b>Token Signing:</b>
-   - The payload is then signed using a secret key known only to the server.
-   - The signature ensures the integrity of the token and prevents tampering.
-4. <b>Token Issuance:</b>
-   - The signed JWT token is issued to the authenticated user.
-
-## **🏁6. Getting Started**
-
-Here you can test book store API:http://ec2-3-88-176-243.compute-1.amazonaws.com/api/swagger-ui/index.html#/
+## **🏁7. Getting Started**
+If you want locally run this project follow these steps:
+- Clone the repository from GitHub: `git clone https://github.com/teract10s/bookStore.git`
+- Create a .env file and fill it with the necessary variables (an example of all the necessary variables in the .env.sample file)
+- Run `mvn clean package` command
+- Install and setup Docker: https://www.docker.com/products/docker-desktop/
+- Run `docker-compose build && docker-compose up` command to build and start the Docker containers
+- The project will be launched at the following link: http://localhost:8081
+- Also you can use swagger for testing at the following link: http://localhost:8081/api/swagger-ui/index.html
+---
+Here you can test book store API without any additional steps: http://ec2-3-88-176-243.compute-1.amazonaws.com/api/swagger-ui/index.html#/
 
 If you want access `ADMIN` role you can use next credentials:
 - email: `admin@gmail.com`
