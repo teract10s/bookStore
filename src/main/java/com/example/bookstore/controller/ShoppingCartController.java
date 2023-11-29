@@ -41,6 +41,7 @@ public class ShoppingCartController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Add cart item to user's shopping cart")
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(

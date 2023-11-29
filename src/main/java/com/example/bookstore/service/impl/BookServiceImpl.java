@@ -31,7 +31,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDtoWithoutCategoryIds save(CreateBookRequestDto bookRequestDto) {
-        Book book = bookRepository.save(bookMapper.toBook(bookRequestDto));
+        Book notSavedBook = bookMapper.toBook(bookRequestDto);
+        Book book = bookRepository.save(notSavedBook);
         setCategories(book, bookRequestDto.categoryIds());
         return bookMapper.toDtoWithoutCategories(bookRepository.save(book));
     }
