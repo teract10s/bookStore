@@ -1,0 +1,2 @@
+INSERT INTO categories (id, name, description, is_deleted) VALUES (1, 'Historical', 'Some books about history', false);
+INSERT INTO categories (id, name, description, is_deleted) VALUES (2, 'Fantasy', 'Some books about fantastic', false);
