@@ -6,6 +6,7 @@ import com.example.bookstore.dto.category.CreateCategoryRequestDto;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -35,6 +36,7 @@ public class CategoryController {
 
     @GetMapping
     @Operation(summary = "Get all categories")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public List<CategoryResponseDto> getAll(@PageableDefault(sort = "name") Pageable pageable) {
         return categoryService.getAll(pageable);
@@ -43,6 +45,7 @@ public class CategoryController {
     @GetMapping("/{categoryId}/books")
     @Operation(summary = "Get books by category",
             description = "Getting books by receiving categoryId in path")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public List<BookDtoWithoutCategoryIds> getBooksByCategory(@PathVariable Long categoryId) {
         return bookService.getBookByCategoryId(categoryId);
@@ -50,6 +53,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get category by id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public CategoryResponseDto getCategoryById(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
@@ -57,6 +61,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Create new category")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
     public CategoryResponseDto createCategory(
@@ -66,6 +71,7 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update category")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CategoryResponseDto updateCategory(
             @PathVariable Long id, @RequestBody @Valid CreateCategoryRequestDto categoryDto
@@ -75,6 +81,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete category", description = "Delete category by id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {

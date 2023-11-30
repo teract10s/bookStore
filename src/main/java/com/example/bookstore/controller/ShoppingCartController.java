@@ -6,6 +6,7 @@ import com.example.bookstore.dto.shopping.cart.CartItemUpdateRequestDto;
 import com.example.bookstore.dto.shopping.cart.ShoppingCartDto;
 import com.example.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -35,6 +36,7 @@ public class ShoppingCartController {
 
     @GetMapping
     @Operation(summary = "Get user's shopping cart")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         return shoppingCartService.getShoppingCartByUserId(authentication);
@@ -43,6 +45,7 @@ public class ShoppingCartController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Add cart item to user's shopping cart")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto addBookToShoppingCart(
             Authentication authentication,
@@ -52,6 +55,7 @@ public class ShoppingCartController {
 
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of cart item")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('USER')")
     public CartItemDto updateCartQuantity(
             Authentication authentication,
@@ -64,6 +68,7 @@ public class ShoppingCartController {
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Delete cart item")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('USER')")
     public void deleteCartItem(Authentication authentication,
