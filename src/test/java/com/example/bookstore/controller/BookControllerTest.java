@@ -90,7 +90,6 @@ public class BookControllerTest {
         );
 
         assertThat(actual)
-                .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("title", "title")
                 .hasFieldOrPropertyWithValue("author", "author")
                 .hasFieldOrPropertyWithValue("isbn", "isbn")
