@@ -106,7 +106,7 @@ If you want locally run this project follow these steps:
 - The project will be launched at the following link: http://localhost:8081
 - Also you can use swagger for testing at the following link: http://localhost:8081/api/swagger-ui/index.html
 ---
-Here you can test book store API without any additional steps: http://ec2-3-88-176-243.compute-1.amazonaws.com/api/swagger-ui/index.html#/
+Here you can test book store API without any additional steps: http://ec2-54-210-36-110.compute-1.amazonaws.com/api/swagger-ui/index.html#/
 
 If you want access `ADMIN` role you can use next credentials:
 - email: `admin@gmail.com`
